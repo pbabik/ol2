@@ -1,0 +1,107 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>GraphicFill Example</title>
+
+        <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <style type="text/css">
+            #controlToggle li {
+                list-style: none;
+            }
+            p {
+                width: 512px;
+            }
+
+            /* avoid pink tiles */
+            .olImageLoadError {
+                background-color: transparent !important;
+            }
+        </style>
+        <script src="../lib/OpenLayers.js"></script>
+        <script type="text/javascript">
+        OpenLayers.Console = console;
+			var map, drawControls, polygonLayer;
+			var button, input, format;
+
+			function init(){
+				map = new OpenLayers.Map('map');
+
+                var wmsLayer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'});
+
+                polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer", { styleMap: new OpenLayers.StyleMap({
+                    default: new OpenLayers.Style({
+                        externalGraphic: 'graphicfill.png',
+                        strokeColor:'blue',
+                        strokeWidth: 2
+                    })
+                }) });
+
+                polygonLayer.addFeatures([
+                    new OpenLayers.Feature.Vector(
+                        new OpenLayers.Geometry.fromWKT("POLYGON((-2.845458984375 13.785095214844,22.467041015625 12.378845214844,22.291259765625 -3.4414672851563,-0.032958984375 -4.4961547851563,-2.845458984375 13.785095214844))"),
+                        {},
+                        null
+                    )
+                ])
+
+                map.addLayers([wmsLayer, polygonLayer]);
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
+                map.addControl(new OpenLayers.Control.MousePosition());
+
+                drawControls = {
+                    polygon: new OpenLayers.Control.DrawFeature(polygonLayer,
+                                OpenLayers.Handler.Polygon)
+                };
+
+                for(var key in drawControls) {
+                    map.addControl(drawControls[key]);
+                }
+
+                map.setCenter(new OpenLayers.LonLat(0, 0), 3);
+
+				var polygonToggle = document.getElementById('polygonToggle');
+				polygonToggle.checked = true;
+				toggleControl(polygonToggle);
+            }
+
+            function toggleControl(element) {
+                for(key in drawControls) {
+                    var control = drawControls[key];
+                    if(element.value == key && element.checked) {
+                        control.activate();
+                    } else {
+                        control.deactivate();
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1 id="title">OpenLayers GraphicFill Example</h1>
+
+        <div id="tags"></div>
+
+        <p id="shortdesc">
+            Demonstrate externalGraphic for polygons.
+        </p>
+
+        <div id="map" class="smallmap"></div>
+
+        <ul id="controlToggle">
+            <li>
+                <input type="radio" name="type" value="none" id="noneToggle"
+                       onclick="toggleControl(this);" checked="checked" />
+                <label for="noneToggle">navigate</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
+                <label for="polygonToggle">draw polygon</label>
+            </li>
+        </ul>
+        <div id="docs">
+			<p>
+				Example of using externalGraphic as fill in a polygon.
+        </div>
+    </body>
+</html>
