@@ -14,7 +14,8 @@ for (var i=0; i<features.length; i++) {
         new OpenLayers.Geometry.Point(
             (360 * Math.random()) - 180, (180 * Math.random()) - 90
         ), {
-            type: labelText
+            type: labelText,
+            labelPriority: randomType
         }
     );
 }
@@ -31,6 +32,7 @@ var style = new OpenLayers.Style({
     labelOutlineWidth: 1,
     labelOutlineColor: '#FFFFFF',
     labelCollisionDetection: true,
+    labelPriority: '${labelPriority}',
     fontColor: "#333333",
     fontFamily: "sans-serif",
     fontWeight: "bold"
