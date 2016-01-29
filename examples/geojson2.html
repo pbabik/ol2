@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/pixi.js/3.0.7/pixi.js"></script>
+    <script src="../lib/OpenLayers.js"></script>
+    <script src="../lib/OpenLayers/Renderer/PIXI.js"></script>
+    <style>
+    .bigmap {
+        width: 1300px;
+        height: 535px;
+    }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">GeoJSON Example</h1>
+
+    <div id="tags">
+       JSON, GeoJSON, light
+    </div>
+
+      <p id="shortdesc">
+        Demonstrate the use of the GeoJSON format.
+    </p>
+    <div id="map" class="bigmap"></div>
+    <div id="docs">
+        <p>This example uses the GeoJSON format.</p>
+    </div>
+    <script type="text/javascript">
+
+        var lon = 23.98;
+        var lat = 50.5864;
+        var zoom = 11;
+        var map, layer;
+            map = new OpenLayers.Map('map');
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'} );
+
+           map.addLayer(layer);
+           map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+           var vector_layer = new OpenLayers.Layer.Vector("Vector",{
+               strategies: [new OpenLayers.Strategy.Fixed()],
+               protocol: new OpenLayers.Protocol.HTTP({
+                   url: 'dolhobyczow.json',
+                   format: new OpenLayers.Format.GeoJSON()
+               }),
+               projection:'EPSG:4326',
+               renderers: ['PIXI']
+           });
+
+           map.addLayer(vector_layer);
+
+           var sel = new OpenLayers.Control.SelectFeature(vector_layer,
+           {
+               hover: true
+           });
+           map.addControl(sel);
+           sel.activate();
+
+    </script>
+  </body>
+</html>
