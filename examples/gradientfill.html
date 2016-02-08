@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Gradient Fill</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="../lib/OpenLayers.js"></script>
+  </head>
+  <body>
+    <h1 id="title">Gradient Fill Example</h1>
+    <div id="tags">
+        gradient
+    </div>
+    <p id="shortdesc">
+        Demonstrates how to use a gradientFill.
+    </p>
+    <div id="map" class="smallmap"></div>
+    <div id="docs">
+        <p>
+    </div>
+    <script>
+    // Create 50 random features, and give them a "type" attribute that
+    // will be used for the label text.
+    var features = new Array(1000);
+    for (var i=0; i<features.length; i++) {
+        features[i] = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point(
+                (0.27 * Math.random()) + 19, (0.1 * Math.random()) + 50.22
+            ), {
+                type: 5 + parseInt(5 * Math.random())
+            }
+        );
+    }
+
+    /**
+     * Create a style instance that is a collection of rules with symbolizers.
+     * Use a default symbolizer to extend symoblizers for all rules.
+     */
+    var style = new OpenLayers.Style({
+        fillColor: "#ffcc66",
+        //strokeColor: "#ff9933",
+        strokeWidth: 0,
+        /*label: "${type}",
+        fontColor: "#333333",
+        fontFamily: "sans-serif",
+        fontWeight: "bold",*/
+        pointRadius: 6,
+        gradientFill: "#ffcc66"
+    });
+
+    // Create a vector layer and give it your style map.
+    var points = new OpenLayers.Layer.Vector("Points", {
+        styleMap: new OpenLayers.StyleMap(style)
+    });
+    points.addFeatures(features);
+
+    var map = new OpenLayers.Map({
+        div: "map",
+        layers: [
+            new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                {layers: "basic"}
+            ),
+            points
+        ],
+        center: new OpenLayers.LonLat(19.13, 50.28),
+        zoom: 11
+    });
+
+
+    </script>
+  </body>
+</html>
